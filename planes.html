@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Elegí tu plan | Cubri Seguros</title>
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/checkout.css">
+    <script type="module" src="js/app.js"></script>
+</head>
+<body data-page="planes">
+    <header class="site-header"><div class="header-inner">
+        <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">C</span><span>Cubri Seguros</span></a>
+        <span class="header-caption">Contratación digital</span>
+    </div></header>
+    <main class="app-shell">
+        <div class="stepper-wrap"><nav class="stepper" aria-label="Progreso de contratación">
+            <ol>
+                <li class="is-complete"><span>✓</span><span>Cotizar</span></li>
+                <li class="is-active" aria-current="step"><span>2</span><span>Plan</span></li>
+                <li><span>3</span><span>Datos</span></li>
+                <li><span>4</span><span>Pago</span></li>
+            </ol><div class="progress-track" aria-hidden="true"><span style="width: 25%"></span></div>
+        </nav></div>
+        <section class="view checkout-view" aria-labelledby="plans-title">
+            <div class="checkout-heading">
+                <span class="eyebrow">PASO 2 DE 4</span>
+                <h1 id="plans-title" tabindex="-1">Elegí tu cobertura</h1>
+                <p>Compará los planes y elegí el que mejor se adapte a vos.</p>
+            </div>
+            <div id="plans-loading" class="notice" role="status">Cargando planes…</div>
+            <div id="page-error" class="notice notice-error" role="alert" hidden></div>
+            <form id="plans-form" novalidate>
+                <div id="plan-list" class="plan-grid"></div>
+                <div class="form-actions">
+                    <a class="btn btn-outline" href="cotizacion.html">← Volver a cotización</a>
+                    <button class="btn" type="submit" id="plans-next">Continuar <span aria-hidden="true">→</span></button>
+                </div>
+            </form>
+        </section>
+        <aside class="summary-card" id="summary-card" aria-labelledby="summary-title">
+            <div class="summary-heading"><div><span class="eyebrow">TU CONTRATACIÓN</span><h2 id="summary-title">Resumen</h2></div><span class="summary-shield" aria-hidden="true">✓</span></div>
+            <p class="summary-product">Seguro de celular</p>
+            <dl class="summary-list">
+                <div><dt>Equipo</dt><dd id="summary-equipment">—</dd></div>
+                <div><dt>Valor declarado</dt><dd id="summary-value">—</dd></div>
+                <div><dt>Plan</dt><dd id="summary-plan">Plus</dd></div>
+                <div><dt>Titular</dt><dd id="summary-holder">—</dd></div>
+            </dl>
+            <div class="summary-total"><span>Total mensual</span><strong id="summary-total">—</strong></div>
+        </aside>
+        <footer class="site-footer"><span>© 2026 Cubri Seguros</span><span>Pago simulado · Tus datos no salen de este navegador</span></footer>
+    </main>
+</body>
+</html>

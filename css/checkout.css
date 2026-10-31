@@ -94,6 +94,49 @@ select:focus-visible {
     gap: 22px 32px;
 }
 
+.home-shell {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+        "view"
+        "footer";
+}
+
+.btn {
+    min-height: 44px;
+    padding: 10px 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid var(--primary);
+    border-radius: 9px;
+    color: #FFFFFF;
+    background: var(--primary);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    transition: background 140ms ease, border-color 140ms ease;
+}
+
+.btn:hover:not([disabled]) {
+    border-color: var(--primary-700);
+    background: var(--primary-700);
+}
+
+.btn-outline {
+    border-color: var(--border);
+    color: var(--text);
+    background: #FFFFFF;
+}
+
+.btn-outline:hover:not([disabled]) {
+    border-color: #CBD5E1;
+    color: var(--text);
+    background: #F8FAFC;
+}
+
 .stepper-wrap {
     grid-area: stepper;
 }
@@ -259,6 +302,7 @@ select:focus-visible {
     border-radius: var(--radius);
     color: var(--text);
     background: white;
+    text-decoration: none;
     text-align: left;
 }
 
@@ -641,6 +685,11 @@ button.product-card {
     font-size: 17px;
 }
 
+.plan-name {
+    margin: 0;
+    font-size: 17px;
+}
+
 .recommended-badge {
     padding: 3px 7px;
     border-radius: 99px;
@@ -784,6 +833,7 @@ button.product-card {
     text-align: left;
     font-size: 13px;
     line-height: 1.8;
+    white-space: pre-line;
 }
 
 .result-view > .btn {

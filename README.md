@@ -1,6 +1,6 @@
 # Cubrí Seguros
 
-Prototipo frontend para la contratación digital de un seguro de celular. El flujo completo funciona en una sola página y simula la cotización, la carga de datos, el pago y la emisión de una póliza ficticia.
+Prototipo frontend para la contratación digital de un seguro de celular. La experiencia está organizada en páginas separadas: inicio, cotización, planes, datos del titular, pago y resultados de aprobación o rechazo.
 
 ## Cómo ejecutar
 
@@ -10,7 +10,7 @@ El proyecto carga los planes desde `data/planes.json`, por lo que debe abrirse d
 2. Iniciá un servidor local, por ejemplo con la extensión **Live Server**.
 3. Abrí la dirección local que muestra la extensión.
 
-No hay backend ni se envían datos a un servicio remoto. La solicitud se conserva en memoria durante el flujo y se descarta al volver al inicio. El único dato persistido en el navegador es un contador local para generar números de póliza ficticios; no se guardan datos de pago.
+No hay backend ni se envían datos a un servicio remoto. La solicitud se mantiene en `sessionStorage` para pasar los datos entre páginas. El número de tarjeta, vencimiento y CVV no se almacenan; se deben volver a ingresar si se reintenta un pago rechazado. Un contador local genera números de póliza ficticios.
 
 ## Publicación en GitHub Pages
 
@@ -21,7 +21,7 @@ El workflow `.github/workflows/pages.yml` publica el sitio al hacer push a `main
 - Cotización de celular con marca, modelo, valor y antigüedad.
 - Selección dinámica de planes cargados desde JSON, con Plus preseleccionado y recomendado.
 - Validaciones accesibles en blur y al enviar: mensajes junto a cada control, foco en el primer error, `aria-invalid` y `aria-describedby`.
-- Navegación adelante/atrás con un único objeto de solicitud en memoria.
+- Navegación entre páginas con un único objeto de solicitud compartido mediante `sessionStorage`.
 - Pago simulado con espera de 1,5 segundos, estado de procesamiento y conservación de la solicitud si se rechaza.
 - Número de póliza ficticio con formato `POL-AAAA-NNNNNN`.
 - Diseño responsive para escritorio, tablet y celular.
@@ -55,17 +55,23 @@ Los demás campos de pago también deben pasar sus validaciones. Un pago rechaza
 ## Estructura
 
 ```text
-index.html          Página única de contratación
+index.html          Inicio y catálogo
+cotizacion.html     Datos del equipo
+planes.html         Comparación y selección de cobertura
+titular.html        Datos personales
+pago.html           Método de pago y simulación
+exito.html          Confirmación y póliza ficticia
+error.html          Rechazo y reintento
 css/
   tokens.css        Tokens visuales
-  checkout.css      Estilos responsive y componentes
+  checkout.css      Componentes compartidos y estilos responsive
 js/
-  app.js            Navegación, formularios y coordinación del flujo
-  estado.js         Estado único de la solicitud
+  app.js            Inicialización y controladores de cada página
+  estado.js         Estado compartido y persistencia temporal
   cotizador.js      Cálculo de cuotas
   validaciones.js   Validaciones de formularios
   pago.js           Pago simulado y número de póliza
-  render.js         Renderizado de planes, resumen y resultados
+  render.js         Renderizado compartido de planes, resumen y resultados
 data/
   planes.json       Tasas y coberturas de los planes
 ```

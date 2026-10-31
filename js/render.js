@@ -36,7 +36,7 @@ function crearPlanCard(plan) {
     const nameRow = document.createElement("span");
     nameRow.className = "plan-name-row";
 
-    const name = document.createElement("span");
+    const name = document.createElement("h2");
     name.className = "plan-name";
     name.textContent = plan.nombre;
 
@@ -119,7 +119,9 @@ export function renderStepper() {
         indicator.firstElementChild.textContent = step < active ? "✓" : String(step);
     }
 
-    progress.style.width = `${Math.max(0, Math.min(active - 1, 4)) * 25}%`;
+    if (progress) {
+        progress.style.width = `${Math.max(0, Math.min(active - 1, 4)) * 25}%`;
+    }
 }
 
 export function renderResultado(planes) {
@@ -132,12 +134,24 @@ export function renderResultado(planes) {
         `Email: ${solicitud.titular.email}`
     ].join("\n");
 
-    document.getElementById("success-name").textContent = nombre;
-    document.getElementById("success-email").textContent = solicitud.titular.email;
-    document.getElementById("policy-number").textContent = solicitud.poliza;
-    document.getElementById("success-summary").textContent = resumen;
-    document.getElementById("failure-summary").textContent =
-        `${resumen}\nNo se realizó ningún cobro.`;
+    const exito = document.getElementById("success-name");
+    if (exito) {
+        exito.textContent = nombre;
+        document.getElementById("success-email").textContent = solicitud.titular.email;
+        document.getElementById("policy-number").textContent = solicitud.poliza;
+        document.getElementById("success-summary").textContent = resumen;
+    }
+
+    const rechazo = document.getElementById("failure-summary");
+    if (rechazo) {
+        rechazo.textContent = [
+            `Equipo: ${solicitud.equipo.marca} ${solicitud.equipo.modelo}`,
+            `Plan ${plan?.nombre ?? ""} · ${formatearPrecio(plan ? calcularPrecioPlan(plan) : 0)} por mes`,
+            `Titular: ${nombre}`,
+            `Email: ${solicitud.titular.email}`,
+            "No se realizó ningún cobro."
+        ].join("\n");
+    }
 }
 
 export function renderVista() {

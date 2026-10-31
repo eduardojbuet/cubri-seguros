@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cotizar celular | Cubri Seguros</title>
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/checkout.css">
+    <script type="module" src="js/app.js"></script>
+</head>
+<body data-page="cotizacion">
+    <header class="site-header"><div class="header-inner">
+        <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">C</span><span>Cubri Seguros</span></a>
+        <span class="header-caption">Contratación digital</span>
+    </div></header>
+    <main class="app-shell">
+        <div class="stepper-wrap"><nav class="stepper" aria-label="Progreso de contratación">
+            <ol>
+                <li class="is-active" aria-current="step"><span>1</span><span>Cotizar</span></li>
+                <li><span>2</span><span>Plan</span></li>
+                <li><span>3</span><span>Datos</span></li>
+                <li><span>4</span><span>Pago</span></li>
+            </ol><div class="progress-track" aria-hidden="true"><span style="width: 0%"></span></div>
+        </nav></div>
+        <section class="view checkout-view" aria-labelledby="equipment-title">
+            <div class="checkout-heading">
+                <span class="eyebrow">PASO 1 DE 4</span>
+                <h1 id="equipment-title" tabindex="-1">Contanos sobre tu celular</h1>
+                <p>Completá los datos del equipo para conocer las opciones de cobertura.</p>
+            </div>
+            <form id="equipment-form" class="form-card" novalidate>
+                <div class="field" data-field="marca">
+                    <label for="marca">Marca</label>
+                    <select id="marca" name="marca" autocomplete="off" aria-describedby="marca-error">
+                        <option value="">Elegí una marca</option>
+                        <option>Apple</option><option>Google</option><option>Huawei</option>
+                        <option>Motorola</option><option>Samsung</option><option>Xiaomi</option><option>Otra</option>
+                    </select>
+                    <p class="field-error" id="marca-error" role="alert"></p>
+                </div>
+                <div class="field" data-field="modelo">
+                    <label for="modelo">Modelo del equipo</label>
+                    <input id="modelo" name="modelo" type="text" minlength="2" maxlength="40" autocomplete="off" placeholder="Ej.: Galaxy A55" aria-describedby="modelo-error">
+                    <p class="field-error" id="modelo-error" role="alert"></p>
+                </div>
+                <div class="field" data-field="valor">
+                    <label for="valor">Valor actual del equipo</label>
+                    <div class="input-prefix"><span aria-hidden="true">$</span><input id="valor" name="valor" type="number" min="100000" max="2500000" step="1" inputmode="numeric" placeholder="600000" aria-describedby="valor-help valor-error"></div>
+                    <p class="field-help" id="valor-help">Entre $100.000 y $2.500.000.</p>
+                    <p class="field-error" id="valor-error" role="alert"></p>
+                </div>
+                <fieldset class="field" data-field="antiguedad" aria-describedby="antiguedad-error">
+                    <legend>Antigüedad del equipo</legend>
+                    <div class="choice-list">
+                        <label class="choice"><input type="radio" name="antiguedad" value="0.5"><span>Menos de 1 año</span></label>
+                        <label class="choice"><input type="radio" name="antiguedad" value="1"><span>De 1 a 2 años</span></label>
+                        <label class="choice"><input type="radio" name="antiguedad" value="2.5"><span>Más de 2 años</span></label>
+                    </div>
+                    <p class="field-error" id="antiguedad-error" role="alert"></p>
+                </fieldset>
+                <p class="action-help" id="equipment-action-help">Completá los datos requeridos para ver los planes.</p>
+                <div class="form-actions">
+                    <a class="btn btn-outline" href="index.html">Volver</a>
+                    <button class="btn" type="submit" id="equipment-next" disabled>Ver planes <span aria-hidden="true">→</span></button>
+                </div>
+            </form>
+        </section>
+        <footer class="site-footer"><span>© 2026 Cubri Seguros</span><span>Tu cotización, paso a paso</span></footer>
+    </main>
+</body>
+</html>

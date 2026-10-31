@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pago rechazado | Cubri Seguros</title>
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/checkout.css">
+    <script type="module" src="js/app.js"></script>
+</head>
+<body data-page="error">
+    <header class="site-header"><div class="header-inner">
+        <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">C</span><span>Cubri Seguros</span></a>
+        <span class="header-caption">Contratación digital</span>
+    </div></header>
+    <main class="app-shell">
+        <section class="view result-view" aria-labelledby="failure-title">
+            <div id="page-error" class="notice notice-error" role="alert" hidden></div>
+            <div class="result-icon result-icon-error" aria-hidden="true">!</div>
+            <span class="eyebrow eyebrow-error">PAGO RECHAZADO</span>
+            <h1 id="failure-title" tabindex="-1">No pudimos procesar el pago</h1>
+            <p>Tu contratación sigue pendiente. No se realizó ningún cobro; podés revisar los datos e intentar nuevamente.</p>
+            <div class="result-summary" id="failure-summary"></div>
+            <div class="form-actions result-actions">
+                <button class="btn btn-outline" type="button" data-change-method>Cambiar medio de pago</button>
+                <button class="btn" type="button" data-retry>Reintentar pago</button>
+            </div>
+            <p class="fine-print">El número de tarjeta no se guarda; ingresá nuevamente un número de prueba.</p>
+        </section>
+        <footer class="site-footer"><span>© 2026 Cubri Seguros</span><span>Pago simulado</span></footer>
+    </main>
+</body>
+</html>

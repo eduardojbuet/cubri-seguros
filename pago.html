@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pago | Cubri Seguros</title>
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/checkout.css">
+    <script type="module" src="js/app.js"></script>
+</head>
+<body data-page="pago">
+    <header class="site-header"><div class="header-inner">
+        <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">C</span><span>Cubri Seguros</span></a>
+        <span class="header-caption">Contratación digital</span>
+    </div></header>
+    <main class="app-shell">
+        <div class="stepper-wrap"><nav class="stepper" aria-label="Progreso de contratación">
+            <ol>
+                <li class="is-complete"><span>✓</span><span>Cotizar</span></li>
+                <li class="is-complete"><span>✓</span><span>Plan</span></li>
+                <li class="is-complete"><span>✓</span><span>Datos</span></li>
+                <li class="is-active" aria-current="step"><span>4</span><span>Pago</span></li>
+            </ol><div class="progress-track" aria-hidden="true"><span style="width: 75%"></span></div>
+        </nav></div>
+        <section class="view checkout-view" aria-labelledby="payment-title">
+            <div class="checkout-heading">
+                <span class="eyebrow">PASO 4 DE 4</span>
+                <h1 id="payment-title" tabindex="-1">Finalizá tu contratación</h1>
+                <p>Revisá el resumen y completá los datos de pago.</p>
+            </div>
+            <div id="page-error" class="notice notice-error" role="alert" hidden></div>
+            <form id="payment-form" class="form-card" novalidate>
+                <div class="field" data-field="metodo">
+                    <label for="metodo">Medio de pago</label>
+                    <select id="metodo" name="metodo" aria-label="Medio de pago">
+                        <option value="credito">Tarjeta de crédito</option>
+                        <option value="debito">Tarjeta de débito</option>
+                    </select>
+                </div>
+                <div class="field" data-field="pagoTitular">
+                    <label for="pago-titular">Nombre del titular de la tarjeta</label>
+                    <input id="pago-titular" name="pagoTitular" type="text" autocomplete="cc-name" aria-describedby="pagoTitular-error">
+                    <p class="field-error" id="pagoTitular-error" role="alert"></p>
+                </div>
+                <div class="field" data-field="tarjeta">
+                    <label for="tarjeta">Número de tarjeta</label>
+                    <input id="tarjeta" name="tarjeta" type="text" inputmode="numeric" autocomplete="cc-number" maxlength="19" placeholder="4111 1111 1111 1111" aria-describedby="tarjeta-help tarjeta-error">
+                    <p class="field-help" id="tarjeta-help">Simulación académica: usá únicamente los números de prueba.</p>
+                    <p class="field-error" id="tarjeta-error" role="alert"></p>
+                </div>
+                <div class="form-grid payment-grid">
+                    <div class="field" data-field="vencimiento"><label for="vencimiento">Vencimiento (MM/AA)</label><input id="vencimiento" name="vencimiento" type="text" inputmode="numeric" autocomplete="cc-exp" maxlength="5" placeholder="MM/AA" aria-describedby="vencimiento-error"><p class="field-error" id="vencimiento-error" role="alert"></p></div>
+                    <div class="field" data-field="cvv"><label for="cvv">CVV</label><input id="cvv" name="cvv" type="password" inputmode="numeric" autocomplete="cc-csc" maxlength="3" placeholder="123" aria-describedby="cvv-error"><p class="field-error" id="cvv-error" role="alert"></p></div>
+                </div>
+                <div class="alert" role="note">Pago simulado. No ingreses datos de tarjetas reales: usá solo los números de prueba indicados.</div>
+                <p class="action-help" id="payment-action-help">Completá los datos de pago para confirmar.</p>
+                <div class="form-actions">
+                    <a class="btn btn-outline" href="titular.html">← Volver a tus datos</a>
+                    <button class="btn" type="submit" id="pay-button" disabled>Pagar y emitir póliza</button>
+                </div>
+                <p class="live-status" id="live-status" role="status" aria-live="polite"></p>
+            </form>
+        </section>
+        <aside class="summary-card" id="summary-card" aria-labelledby="summary-title">
+            <div class="summary-heading"><div><span class="eyebrow">TU CONTRATACIÓN</span><h2 id="summary-title">Resumen</h2></div><span class="summary-shield" aria-hidden="true">✓</span></div>
+            <p class="summary-product">Seguro de celular</p>
+            <dl class="summary-list">
+                <div><dt>Equipo</dt><dd id="summary-equipment">—</dd></div>
+                <div><dt>Valor declarado</dt><dd id="summary-value">—</dd></div>
+                <div><dt>Plan</dt><dd id="summary-plan">Plus</dd></div>
+                <div><dt>Titular</dt><dd id="summary-holder">—</dd></div>
+            </dl>
+            <div class="summary-total"><span>Total mensual</span><strong id="summary-total">—</strong></div>
+        </aside>
+        <footer class="site-footer"><span>© 2026 Cubri Seguros</span><span>Esta es una simulación académica</span></footer>
+    </main>
+</body>
+</html>
