@@ -12,6 +12,10 @@ El proyecto carga los planes desde `data/planes.json`, por lo que debe abrirse d
 
 No hay backend ni se envían datos a un servicio remoto. La solicitud se conserva en memoria durante el flujo y se descarta al volver al inicio. El único dato persistido en el navegador es un contador local para generar números de póliza ficticios; no se guardan datos de pago.
 
+## Publicación en GitHub Pages
+
+El workflow `.github/workflows/pages.yml` publica el sitio al hacer push a `main`. Para habilitarlo en el repositorio, configurá **Settings → Pages → Build and deployment → Source: GitHub Actions**. Después, volvé a ejecutar el workflow desde la pestaña **Actions**.
+
 ## Flujo y funcionalidades
 
 - Cotización de celular con marca, modelo, valor y antigüedad.
