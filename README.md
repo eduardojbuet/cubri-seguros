@@ -8,7 +8,7 @@ Sistema frontend web para la contratación digital de seguros para celulares, de
 - **Flujo de contratación completo de extremo a extremo:**
   1. Pantalla de inicio y catálogo de seguros.
   2. Cotización interactiva del celular (marca, modelo, valor y antigüedad).
-  3. Selección dinámica de planes (Básico, Plus, Premium) cargados desde un archivo JSON local.
+  3. Selección dinámica de planes (Básico, Plus, Premium) cargados desde un archivo JSON local. El precio mensual se calcula aplicando la tasa anual del plan al valor declarado, dividiéndola por 12 y ajustándola por antigüedad: sin recargo para menos de 1 año, 10% para 1 a 2 años y 25% para más de 2 años.
   4. Carga y validación de datos personales del titular.
   5. Simulación de pago con tarjeta con validaciones estrictas y control de errores.
   6. Pantallas de éxito (con generación y persistencia de número de póliza ficticio) y error.
@@ -57,3 +57,9 @@ cubri-seguros/
 │   └── planes.json     # Datos de los planes disponibles
 │
 └── README.md           # Documentación del proyecto
+
+## Casos de prueba de precios
+
+- Valor $ 600.000 · menos de 1 año → Básico $ 2.000 · Plus $ 3.000 · Premium $ 4.500
+- Valor $ 600.000 · 1 a 2 años → Básico $ 2.200 · Plus $ 3.300 · Premium $ 4.950
+- Valor $ 1.200.000 · más de 2 años → Básico $ 5.000 · Plus $ 7.500 · Premium $ 11.250

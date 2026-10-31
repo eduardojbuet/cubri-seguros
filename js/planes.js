@@ -41,6 +41,21 @@ function formatearPrecio(valor) {
 }
 
 
+function calcularPrecioMensual(plan) {
+
+    let factorAntiguedad = 1;
+
+    if (cotizacion.antiguedad >= 1 && cotizacion.antiguedad <= 2) {
+        factorAntiguedad = 1.1;
+    } else if (cotizacion.antiguedad > 2) {
+        factorAntiguedad = 1.25;
+    }
+
+    return cotizacion.valor * plan.tasaAnual / 12 * factorAntiguedad;
+
+}
+
+
 // Obtener los planes
 async function cargarPlanes() {
 
@@ -77,8 +92,7 @@ function mostrarPlanes(planes) {
     planes.forEach(function(plan) {
 
         // Calcular el precio mensual
-        const precio = cotizacion.valor *
-            plan.porcentajeMensual / 100;
+        const precio = calcularPrecioMensual(plan);
 
         // Crear la tarjeta
         const tarjeta = document.createElement("article");
@@ -127,15 +141,14 @@ function mostrarPlanes(planes) {
                 return plan.id === boton.dataset.plan;
             });
 
-            const precio = cotizacion.valor *
-                planElegido.porcentajeMensual / 100;
+            const precio = calcularPrecioMensual(planElegido);
 
             // Guardar el plan seleccionado
             guardarDatos("plan", {
                 id: planElegido.id,
                 nombre: planElegido.nombre,
                 precioMensual: precio,
-                porcentajeMensual: planElegido.porcentajeMensual
+                tasaAnual: planElegido.tasaAnual
             });
 
             // Ir a los datos del titular

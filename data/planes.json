@@ -4,7 +4,7 @@
         "id": "basico",
         "nombre": "Básico",
         "descripcion": "Protección esencial para tu celular.",
-        "porcentajeMensual": 1,
+        "tasaAnual": 0.04,
         "coberturas": [
             "Protección ante robo",
             "Asistencia básica"
@@ -14,7 +14,7 @@
         "id": "plus",
         "nombre": "Plus",
         "descripcion": "Más protección para tu equipo.",
-        "porcentajeMensual": 1.5,
+        "tasaAnual": 0.06,
         "coberturas": [
             "Protección ante robo",
             "Protección ante daño accidental",
@@ -25,7 +25,7 @@
         "id": "premium",
         "nombre": "Premium",
         "descripcion": "La cobertura más completa.",
-        "porcentajeMensual": 2,
+        "tasaAnual": 0.09,
         "coberturas": [
             "Protección ante robo",
             "Protección ante daño accidental",

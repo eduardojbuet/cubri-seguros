@@ -14,7 +14,7 @@ function validarCotizacion(datos) {
     }
 
     if (
-        !Number.isInteger(datos.antiguedad) ||
+        !Number.isFinite(datos.antiguedad) ||
         datos.antiguedad < 0 ||
         datos.antiguedad > 20
     ) {
