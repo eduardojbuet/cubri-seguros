@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cotizar celular | Cubrí Seguros</title>
+
+    <!-- Tailwind CSS v4 & Basecoat UI -->
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-ui@0.2.1/dist/basecoat.min.css">
+
+    <!-- Estilos propios -->
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+
+<body>
+
+    <main class="pantalla-cotizacion">
+
+        <!-- ENCABEZADO -->
+        <header class="encabezado-cotizacion">
+
+            <a href="index.html" class="logo-cotizacion">
+                <span class="logo-icono">C</span>
+                <span>Cubri</span>
+            </a>
+
+            <span class="texto-seguro">Seguro de celular</span>
+
+        </header>
+
+
+        <!-- CONTENIDO -->
+        <section class="contenido-cotizacion">
+
+            <!-- BARRA DE PROGRESO -->
+            <div class="progreso">
+
+                <div class="progreso-etapas">
+                    <span class="etapa-activa">1. Cotizar</span>
+                    <span>2. Plan</span>
+                    <span>3. Datos</span>
+                    <span>4. Pago</span>
+                </div>
+
+                <div class="progreso-linea">
+                    <div class="progreso-avance progreso-25"></div>
+                </div>
+
+            </div>
+
+
+            <!-- TARJETA DEL FORMULARIO -->
+            <section class="tarjeta-cotizacion">
+
+                <div class="icono-cotizacion">📱</div>
+
+                <h1>Contanos sobre tu celular</h1>
+
+                <p class="descripcion-cotizacion">
+                    Completá los datos de tu equipo para conocer
+                    las opciones de cobertura disponibles.
+                </p>
+
+
+                <form id="formulario-cotizacion">
+
+                    <!-- MARCA -->
+                    <div class="campo">
+                        <label for="marca">Marca del celular</label>
+
+                        <input
+                            type="text"
+                            id="marca"
+                            name="marca"
+                            placeholder="Ejemplo: Samsung"
+                            required
+                        >
+                    </div>
+
+
+                    <!-- MODELO -->
+                    <div class="campo">
+                        <label for="modelo">Modelo del celular</label>
+
+                        <input
+                            type="text"
+                            id="modelo"
+                            name="modelo"
+                            placeholder="Ejemplo: Galaxy S24"
+                            required
+                        >
+                    </div>
+
+
+                    <!-- VALOR -->
+                    <div class="campo">
+                        <label for="valor">Valor actual del celular ($)</label>
+
+                        <input
+                            type="number"
+                            id="valor"
+                            name="valor"
+                            placeholder="Ejemplo: 800000"
+                            min="1"
+                            step="1"
+                            required
+                        >
+                    </div>
+
+
+                    <!-- ANTIGÜEDAD -->
+                    <div class="campo">
+                        <label for="antiguedad">
+                            Antigüedad del celular (años)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="antiguedad"
+                            name="antiguedad"
+                            placeholder="Ejemplo: 1"
+                            min="0"
+                            max="20"
+                            step="1"
+                            required
+                        >
+                    </div>
+
+
+                    <!-- MENSAJE DE ERROR -->
+                    <p id="mensaje-error" class="mensaje-error"></p>
+
+
+                    <!-- BOTONES -->
+                    <div class="acciones-cotizacion">
+
+                        <a href="index.html" class="boton-secundario">
+                            Volver
+                        </a>
+
+                        <button type="submit" class="boton-principal">
+                            Ver planes →
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+            <p class="texto-seguridad">
+                🔒 Tus datos están protegidos.
+            </p>
+
+        </section>
+
+
+        <!-- PIE DE PÁGINA -->
+        <footer class="pie-cotizacion">
+            © 2026 Cubrí Seguros
+        </footer>
+
+    </main>
+
+
+    <!-- ARCHIVOS JAVASCRIPT -->
+    <script src="js/estado.js"></script>
+    <script src="js/validaciones.js"></script>
+    <script src="js/cotizador.js"></script>
+
+</body>
+
+</html>

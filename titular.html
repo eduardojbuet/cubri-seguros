@@ -1,0 +1,237 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Datos del titular | Cubrí Seguros</title>
+
+    <!-- Tailwind CSS v4 & Basecoat UI -->
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-ui@0.2.1/dist/basecoat.min.css">
+
+    <!-- Estilos propios -->
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+
+<body>
+
+    <main class="pantalla-titular">
+
+        <!-- ENCABEZADO -->
+        <header class="encabezado-titular">
+
+            <a href="index.html" class="logo-cotizacion">
+                <span class="logo-icono">C</span>
+                <span>Cubri</span>
+            </a>
+
+            <span class="texto-seguro">Seguro de celular</span>
+
+        </header>
+
+
+        <section class="contenido-titular">
+
+            <!-- PROGRESO -->
+            <div class="progreso">
+
+                <div class="progreso-etapas">
+                    <span>1. Cotizar</span>
+                    <span>2. Plan</span>
+                    <span class="etapa-activa">3. Datos</span>
+                    <span>4. Pago</span>
+                </div>
+
+                <div class="progreso-linea">
+                    <div class="progreso-avance progreso-75"></div>
+                </div>
+
+            </div>
+
+
+            <!-- PRESENTACION -->
+            <div class="titulo-titular">
+
+                <span class="etiqueta">CASI TERMINAMOS</span>
+
+                <h1>Tus datos personales</h1>
+
+                <p>
+                    Necesitamos algunos datos para preparar
+                    tu seguro y continuar con la contratación.
+                </p>
+
+            </div>
+
+
+            <!-- RESUMEN DEL SEGURO -->
+            <section class="resumen-titular">
+
+                <div class="resumen-icono">🛡️</div>
+
+                <div>
+                    <h2>Resumen de tu seguro</h2>
+
+                    <div id="resumen-seguro">
+                        Cargando resumen...
+                    </div>
+                </div>
+
+            </section>
+
+
+            <!-- FORMULARIO -->
+            <section class="tarjeta-titular">
+
+                <h2>Información del titular</h2>
+
+                <p class="subtitulo-titular">
+                    Completá tus datos tal como aparecen en tu documento.
+                </p>
+
+                <form id="formulario-titular">
+
+                    <div class="campos-titular">
+
+                        <!-- NOMBRE -->
+                        <div class="campo">
+                            <label for="nombre">Nombre</label>
+
+                            <input
+                                type="text"
+                                id="nombre"
+                                name="nombre"
+                                placeholder="Tu nombre"
+                                autocomplete="given-name"
+                                required
+                            >
+                        </div>
+
+
+                        <!-- APELLIDO -->
+                        <div class="campo">
+                            <label for="apellido">Apellido</label>
+
+                            <input
+                                type="text"
+                                id="apellido"
+                                name="apellido"
+                                placeholder="Tu apellido"
+                                autocomplete="family-name"
+                                required
+                            >
+                        </div>
+
+
+                        <!-- DNI -->
+                        <div class="campo">
+                            <label for="dni">DNI</label>
+
+                            <input
+                                type="text"
+                                id="dni"
+                                name="dni"
+                                placeholder="Ejemplo: 30123456"
+                                inputmode="numeric"
+                                minlength="7"
+                                maxlength="8"
+                                required
+                            >
+                        </div>
+
+
+                        <!-- EMAIL -->
+                        <div class="campo">
+                            <label for="email">Correo electrónico</label>
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="ejemplo@correo.com"
+                                autocomplete="email"
+                                required
+                            >
+                        </div>
+
+
+                        <!-- TELEFONO -->
+                        <div class="campo">
+                            <label for="telefono">Teléfono</label>
+
+                            <input
+                                type="tel"
+                                id="telefono"
+                                name="telefono"
+                                placeholder="Ejemplo: 3442 123456"
+                                autocomplete="tel"
+                                required
+                            >
+                        </div>
+
+
+                        <!-- DOMICILIO -->
+                        <div class="campo campo-completo">
+                            <label for="domicilio">Domicilio</label>
+
+                            <input
+                                type="text"
+                                id="domicilio"
+                                name="domicilio"
+                                placeholder="Calle y número"
+                                autocomplete="street-address"
+                                required
+                            >
+                        </div>
+
+                    </div>
+
+
+                    <!-- ERROR -->
+                    <p id="mensaje-error" class="mensaje-error"></p>
+
+
+                    <!-- BOTONES -->
+                    <div class="acciones-titular">
+
+                        <a href="planes.html" class="boton-secundario">
+                            ← Volver
+                        </a>
+
+                        <button type="submit" class="boton-principal">
+                            Continuar al pago →
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+            <p class="texto-seguridad">
+                🔒 Tus datos se utilizan para completar esta contratación de prueba.
+            </p>
+
+        </section>
+
+
+        <!-- PIE -->
+        <footer class="pie-cotizacion">
+            © 2026 Cubrí Seguros
+        </footer>
+
+    </main>
+
+
+    <!-- JAVASCRIPT -->
+    <script src="js/estado.js"></script>
+    <script src="js/validaciones.js"></script>
+    <script src="js/titular.js"></script>
+
+</body>
+
+</html>

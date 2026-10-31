@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Elegí tu plan | Cubrí Seguros</title>
+
+    <!-- Tailwind CSS v4 & Basecoat UI -->
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-ui@0.2.1/dist/basecoat.min.css">
+
+    <!-- Estilos propios -->
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+
+<body>
+
+    <main class="pantalla-planes">
+
+        <!-- ENCABEZADO -->
+        <header class="encabezado-planes">
+
+            <a href="index.html" class="logo-cotizacion">
+                <span class="logo-icono">C</span>
+                <span>Cubri</span>
+            </a>
+
+            <span class="texto-seguro">Seguro de celular</span>
+
+        </header>
+
+
+        <!-- CONTENIDO -->
+        <section class="contenido-planes">
+
+            <!-- BARRA DE PROGRESO -->
+            <div class="progreso">
+
+                <div class="progreso-etapas">
+                    <span>1. Cotizar</span>
+                    <span class="etapa-activa">2. Plan</span>
+                    <span>3. Datos</span>
+                    <span>4. Pago</span>
+                </div>
+
+                <div class="progreso-linea">
+                    <div class="progreso-avance progreso-50"></div>
+                </div>
+
+            </div>
+
+
+            <!-- TITULO -->
+            <div class="titulo-planes">
+
+                <span class="etiqueta">TU PROTECCIÓN</span>
+
+                <h1>Elegí tu cobertura</h1>
+
+                <p>
+                    Compará nuestros planes y elegí el que mejor
+                    se adapte a vos.
+                </p>
+
+            </div>
+
+
+            <!-- RESUMEN DEL CELULAR -->
+            <section class="resumen-celular-seccion">
+
+                <div class="resumen-icono">📱</div>
+
+                <div id="resumen-celular">
+                    Cargando datos del celular...
+                </div>
+
+            </section>
+
+
+            <!-- LISTA DE PLANES -->
+            <section class="planes-contenedor">
+
+                <div class="encabezado-lista-planes">
+                    <h2>Nuestras coberturas</h2>
+                    <p>Elegí el plan que más te convenga.</p>
+                </div>
+
+                <div id="lista-planes" class="lista-planes">
+                    Cargando planes...
+                </div>
+
+                <p id="mensaje-error" class="mensaje-error"></p>
+
+            </section>
+
+
+            <!-- VOLVER -->
+            <div class="acciones-planes">
+
+                <a href="cotizacion.html" class="boton-secundario">
+                    ← Volver a cotización
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- PIE -->
+        <footer class="pie-cotizacion">
+            © 2026 Cubrí Seguros
+        </footer>
+
+    </main>
+
+
+    <!-- JAVASCRIPT -->
+    <script src="js/estado.js"></script>
+    <script src="js/planes.js"></script>
+
+</body>
+
+</html>
