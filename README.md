@@ -1,65 +1,32 @@
-# Cubrí Seguros 🛡️📱
+# Cubrí Seguros
 
-Sistema frontend web para la contratación digital de seguros para celulares, desarrollado como Trabajo Práctico de la materia **Diseño UX/UI 2026** de la **Licenciatura en Sistemas de Información (UADER)**.
+Prototipo frontend para la contratación digital de un seguro de celular. El flujo completo funciona en una sola página y simula la cotización, la carga de datos, el pago y la emisión de una póliza ficticia.
 
----
+## Cómo ejecutar
 
-## 🚀 Características Principales
-- **Flujo de contratación completo de extremo a extremo:**
-  1. Pantalla de inicio y catálogo de seguros.
-  2. Cotización interactiva del celular (marca, modelo, valor y antigüedad).
-  3. Selección dinámica de planes (Básico, Plus, Premium) cargados desde un archivo JSON local. El precio mensual se calcula aplicando la tasa anual del plan al valor declarado, dividiéndola por 12 y ajustándola por antigüedad: sin recargo para menos de 1 año, 10% para 1 a 2 años y 25% para más de 2 años.
-  4. Carga y validación de datos personales del titular.
-  5. Simulación de pago con tarjeta con validaciones estrictas y control de errores.
-  6. Pantallas de éxito (con generación y persistencia de número de póliza ficticio) y error.
-- **Seguridad y Control de Acceso:** Validación de persistencia mediante `sessionStorage` para evitar saltos directos entre pantallas sin completar los pasos previos.
-- **Diseño Responsive:** Adaptado para celulares (390px), tablets (768px) y computadoras (1440px).
+El proyecto carga los planes desde `data/planes.json`, por lo que debe abrirse desde un servidor web local y no directamente como `file://`.
 
----
+1. Abrí el proyecto en Visual Studio Code.
+2. Iniciá un servidor local, por ejemplo con la extensión **Live Server**.
+3. Abrí la dirección local que muestra la extensión.
 
-## 🛠️ Tecnologías Utilizadas
-- **HTML5** (Estructura semántica)
-- **Tailwind CSS v4** (Utilidades de diseño)
-- **Basecoat UI** (Componentes de interfaz)
-- **JavaScript Vanilla** (Lógica de negocio, validaciones y manejo de estado)
-- **CSS Tradicional / Tokens** (Variables de diseño y estilos personalizados)
-- **Git y GitHub** (Control de versiones)
+No hay backend ni se envían datos a un servicio remoto. La solicitud se conserva en memoria durante el flujo y se descarta al volver al inicio. El único dato persistido en el navegador es un contador local para generar números de póliza ficticios; no se guardan datos de pago.
 
----
+## Flujo y funcionalidades
 
-## 📂 Estructura del Proyecto
-```text
-cubri-seguros/
-│
-├── index.html          # Pantalla de inicio
-├── cotizacion.html     # Cotización del equipo
-├── planes.html         # Selección de coberturas
-├── titular.html        # Datos personales del titular
-├── pago.html           # Simulación de pago con tarjeta
-├── exito.html          # Pantalla de contratación exitosa
-├── error.html          # Pantalla de pago rechazado
-│
-├── css/
-│   ├── estilos.css     # Estilos específicos del proyecto
-│   └── tokens.css      # Variables de diseño (colores, radios, sombras)
-│
-├── js/
-│   ├── app.js
-│   ├── cotizador.js
-│   ├── estado.js       # Manejo de sessionStorage
-│   ├── pago.js         # Lógica de validación y simulación de pagos
-│   ├── planes.js       # Carga dinámica desde JSON
-│   ├── titular.js
-│   ├── validaciones.js # Funciones de validación de formularios
-│   └── resultado.js    # Manejo de pólizas y estados finales
-│
-├── data/
-│   └── planes.json     # Datos de los planes disponibles
-│
-└── README.md           # Documentación del proyecto
-```
+- Cotización de celular con marca, modelo, valor y antigüedad.
+- Selección dinámica de planes cargados desde JSON, con Plus preseleccionado y recomendado.
+- Validaciones accesibles en blur y al enviar: mensajes junto a cada control, foco en el primer error, `aria-invalid` y `aria-describedby`.
+- Navegación adelante/atrás con un único objeto de solicitud en memoria.
+- Pago simulado con espera de 1,5 segundos, estado de procesamiento y conservación de la solicitud si se rechaza.
+- Número de póliza ficticio con formato `POL-AAAA-NNNNNN`.
+- Diseño responsive para escritorio, tablet y celular.
 
-## Casos de prueba de precios
+## Cálculo de cuota mensual
+
+La cuota se calcula como `Math.round(valor * tasaAnual / 12 * factorAntiguedad)`, con factores 1 para menos de 1 año, 1,10 para 1 a 2 años y 1,25 para más de 2 años.
+
+Casos de prueba que deben coincidir exactamente:
 
 - Valor $ 600.000 · menos de 1 año → Básico $ 2.000 · Plus $ 3.000 · Premium $ 4.500
 - Valor $ 600.000 · 1 a 2 años → Básico $ 2.200 · Plus $ 3.300 · Premium $ 4.950
@@ -67,8 +34,36 @@ cubri-seguros/
 
 ## Validaciones
 
-- Equipo: marca obligatoria, modelo de 2 a 40 caracteres y valor entre $100.000 y $2.500.000.
-- Antigüedad: debe elegirse una opción (menos de 1 año, de 1 a 2 años o más de 2 años).
-- Titular: nombre y apellido de al menos 2 letras, DNI de 7 u 8 números, mayoría de edad, email válido, celular de 10 dígitos y aceptación de términos.
-- Pago: tarjeta de 16 dígitos, vencimiento futuro en formato MM/AA, CVV de 3 dígitos y nombre del titular obligatorio.
-- Simulación: 4111 1111 1111 1111 aprueba, 4000 0000 0000 0002 rechaza y cualquier otro número de 16 dígitos válido aprueba.
+- Equipo: marca obligatoria, modelo de 2 a 40 caracteres, valor entre $100.000 y $2.500.000 y antigüedad seleccionada.
+- Titular: nombre y apellido, DNI de 7 u 8 dígitos, mayoría de edad, email y celular válidos y aceptación de términos.
+- Pago: tarjeta de 16 dígitos, vencimiento vigente en formato MM/AA, CVV de 3 dígitos y nombre del titular.
+
+## Números para la simulación
+
+Usá exclusivamente estos números de prueba; no ingreses datos de tarjetas reales:
+
+- `4111 1111 1111 1111`: pago aprobado.
+- `4000 0000 0000 0002`: pago rechazado.
+- Cualquier otro número de 16 dígitos: pago aprobado.
+
+Los demás campos de pago también deben pasar sus validaciones. Un pago rechazado no borra los datos; se pueden corregir o reintentar.
+
+## Estructura
+
+```text
+index.html          Página única de contratación
+css/
+  tokens.css        Tokens visuales
+  checkout.css      Estilos responsive y componentes
+js/
+  app.js            Navegación, formularios y coordinación del flujo
+  estado.js         Estado único de la solicitud
+  cotizador.js      Cálculo de cuotas
+  validaciones.js   Validaciones de formularios
+  pago.js           Pago simulado y número de póliza
+  render.js         Renderizado de planes, resumen y resultados
+data/
+  planes.json       Tasas y coberturas de los planes
+```
+
+Esta es una simulación académica: no ofrece cobertura de seguros ni procesa pagos reales.

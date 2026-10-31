@@ -6,31 +6,29 @@
         "descripcion": "Protección esencial para tu celular.",
         "tasaAnual": 0.04,
         "coberturas": [
-            "Protección ante robo",
-            "Asistencia básica"
+            "Robo con violencia"
         ]
     },
     {
         "id": "plus",
         "nombre": "Plus",
-        "descripcion": "Más protección para tu equipo.",
+        "descripcion": "Protección adicional para tu celular.",
         "tasaAnual": 0.06,
+        "recomendado": true,
         "coberturas": [
-            "Protección ante robo",
-            "Protección ante daño accidental",
-            "Asistencia prioritaria"
+            "Robo con violencia",
+            "Rotura de pantalla"
         ]
     },
     {
         "id": "premium",
         "nombre": "Premium",
-        "descripcion": "La cobertura más completa.",
+        "descripcion": "La cobertura más completa para tu celular.",
         "tasaAnual": 0.09,
         "coberturas": [
-            "Protección ante robo",
-            "Protección ante daño accidental",
-            "Cobertura ampliada",
-            "Asistencia prioritaria"
+            "Robo con violencia",
+            "Rotura total",
+            "Hurto / pérdida"
         ]
     }
 ]

@@ -1,21 +1,35 @@
-
-function guardarDatos(clave, datos) {
-
-    sessionStorage.setItem(
-        clave,
-        JSON.stringify(datos)
-    );
-
+function crearSolicitud() {
+    return {
+        paso: 0,
+        equipo: {
+            marca: "",
+            modelo: "",
+            valor: 0,
+            antiguedad: ""
+        },
+        plan: "plus",
+        titular: {
+            nombre: "",
+            apellido: "",
+            dni: "",
+            nacimiento: "",
+            email: "",
+            celular: "",
+            terminos: false
+        },
+        pago: {
+            metodo: "credito",
+            tarjeta: "",
+            vencimiento: "",
+            cvv: "",
+            titular: ""
+        },
+        poliza: null
+    };
 }
 
-function recuperarDatos(clave) {
+export const solicitud = crearSolicitud();
 
-    const datosGuardados = sessionStorage.getItem(clave);
-
-    if (datosGuardados === null) {
-        return null;
-    }
-
-    return JSON.parse(datosGuardados);
-
+export function reiniciarSolicitud() {
+    Object.assign(solicitud, crearSolicitud());
 }

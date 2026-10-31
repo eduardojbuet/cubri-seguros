@@ -1,42 +1,54 @@
+const formatoEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const formatoDni = /^\d{7,8}$/;
+const formatoTarjeta = /^\d{16}$/;
+const formatoVencimiento = /^(0[1-9]|1[0-2])\/(\d{2})$/;
+const formatoCvv = /^\d{3}$/;
+const formatoNombre = /^[\p{L}\s'-]+$/u;
 
-function validarCotizacion(datos) {
-
-    if (datos.marca.trim() === "") {
-        return "Elegí una marca";
-    }
-
-    const modelo = datos.modelo.trim();
-
-    if (modelo.length < 2 || modelo.length > 40) {
-        return "Ingresá el modelo del equipo";
-    }
-
-    if (
-        !Number.isFinite(datos.valor) ||
-        datos.valor < 100000 ||
-        datos.valor > 2500000
-    ) {
-        return "El valor debe estar entre $100.000 y $2.500.000";
-    }
-
-    if (
-        !Number.isFinite(datos.antiguedad) ||
-        datos.antiguedad < 0 ||
-        datos.antiguedad > 20
-    ) {
-        return "Indicá la antigüedad";
-    }
-
-    return "";
+export function validarMarca(valor) {
+    return valor ? null : "Elegí una marca";
 }
 
-function esMayorDeEdad(fechaNacimiento) {
+export function validarModelo(valor) {
+    const longitud = valor.trim().length;
+    return longitud >= 2 && longitud <= 40
+        ? null
+        : "Ingresá el modelo del equipo";
+}
 
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(fechaNacimiento)) {
-        return false;
+export function validarValor(valor) {
+    const numero = Number(valor);
+    return Number.isFinite(numero) && numero >= 100000 && numero <= 2500000
+        ? null
+        : "El valor debe estar entre $100.000 y $2.500.000";
+}
+
+export function validarAntiguedad(valor) {
+    return ["0.5", "1", "2.5"].includes(String(valor))
+        ? null
+        : "Indicá la antigüedad";
+}
+
+export function validarNombre(valor) {
+    const nombre = valor.trim();
+    const cantidadLetras = nombre.match(/\p{L}/gu)?.length ?? 0;
+    return cantidadLetras >= 2 && formatoNombre.test(nombre)
+        ? null
+        : "Ingresá tu nombre / apellido";
+}
+
+export function validarDni(valor) {
+    return formatoDni.test(valor.trim())
+        ? null
+        : "El DNI debe tener 7 u 8 números";
+}
+
+export function validarNacimiento(valor) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(valor)) {
+        return "Tenés que ser mayor de edad";
     }
 
-    const [anio, mes, dia] = fechaNacimiento.split("-").map(Number);
+    const [anio, mes, dia] = valor.split("-").map(Number);
     const nacimiento = new Date(anio, mes - 1, dia);
 
     if (
@@ -44,56 +56,65 @@ function esMayorDeEdad(fechaNacimiento) {
         nacimiento.getMonth() !== mes - 1 ||
         nacimiento.getDate() !== dia
     ) {
-        return false;
+        return "Tenés que ser mayor de edad";
     }
 
     const hoy = new Date();
-    const fechaLimite = new Date(
+    const limite = new Date(
         hoy.getFullYear() - 18,
         hoy.getMonth(),
         hoy.getDate()
     );
 
-    return nacimiento <= fechaLimite;
+    return nacimiento <= limite ? null : "Tenés que ser mayor de edad";
 }
 
+export function validarEmail(valor) {
+    return formatoEmail.test(valor.trim())
+        ? null
+        : "Ingresá un email válido";
+}
 
-function validarTitular(datos) {
+export function validarCelular(valor) {
+    const digitos = valor.replace(/[\s-]/g, "");
+    return /^(?!0)(?!15)\d{10}$/.test(digitos)
+        ? null
+        : "Ingresá un celular válido";
+}
 
-    const nombre = datos.nombre.trim();
-    const apellido = datos.apellido.trim();
-    const letrasNombre = nombre.match(/\p{L}/gu) || [];
-    const letrasApellido = apellido.match(/\p{L}/gu) || [];
+export function validarTerminos(valor) {
+    return valor ? null : "Tenés que aceptar los términos";
+}
 
-    if (letrasNombre.length < 2 || !/^[\p{L}\s'-]+$/u.test(nombre)) {
-        return "Ingresá tu nombre / apellido";
+export function validarTarjeta(valor) {
+    const digitos = valor.replace(/\s/g, "");
+    return formatoTarjeta.test(digitos)
+        ? null
+        : "Número de tarjeta inválido";
+}
+
+export function validarVencimiento(valor, hoy = new Date()) {
+    const coincidencia = formatoVencimiento.exec(valor);
+    if (!coincidencia) {
+        return "Vencimiento inválido";
     }
 
-    if (letrasApellido.length < 2 || !/^[\p{L}\s'-]+$/u.test(apellido)) {
-        return "Ingresá tu nombre / apellido";
-    }
+    const mes = Number(coincidencia[1]);
+    const anio = 2000 + Number(coincidencia[2]);
+    const vigente = anio > hoy.getFullYear() ||
+        (anio === hoy.getFullYear() && mes >= hoy.getMonth() + 1);
 
-    if (!/^[0-9]{7,8}$/.test(datos.dni)) {
-        return "El DNI debe tener 7 u 8 números";
-    }
+    return vigente ? null : "Vencimiento inválido";
+}
 
-    if (!esMayorDeEdad(datos.fechaNacimiento)) {
-        return "Tenés que ser mayor de edad";
-    }
+export function validarCvv(valor) {
+    return formatoCvv.test(valor)
+        ? null
+        : "CVV inválido";
+}
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(datos.email)) {
-        return "Ingresá un email válido";
-    }
-
-    const telefonoLimpio = datos.telefono.replace(/[\s-]/g, "");
-
-    if (!/^(?!0)(?!15)[0-9]{10}$/.test(telefonoLimpio)) {
-        return "Ingresá un celular válido";
-    }
-
-    if (!datos.terminos) {
-        return "Tenés que aceptar los términos";
-    }
-
-    return "";
+export function validarTitularTarjeta(valor) {
+    return valor.trim()
+        ? null
+        : "Ingresá el nombre del titular";
 }

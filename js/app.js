@@ -1,119 +1,454 @@
-import { solicitud, actualizar, irAPaso, reiniciar } from "./estado.js";
-import { validar } from "./validaciones.js";
-import { renderStepper, renderPlanes, renderResumen, renderResultado } from "./render.js";
-import { simularPago, generarPoliza } from "./pago.js";
-import { calcularCuota } from "./cotizador.js";
+import { solicitud, reiniciarSolicitud } from "./estado.js";
+import { generarPoliza, simularPago } from "./pago.js";
+import {
+    renderPlanes,
+    renderResultado,
+    renderResumen,
+    renderStepper,
+    renderVista
+} from "./render.js";
+import {
+    validarAntiguedad,
+    validarCelular,
+    validarCvv,
+    validarDni,
+    validarEmail,
+    validarMarca,
+    validarModelo,
+    validarNacimiento,
+    validarNombre,
+    validarTarjeta,
+    validarTerminos,
+    validarTitularTarjeta,
+    validarValor,
+    validarVencimiento
+} from "./validaciones.js";
 
-const $ = s => document.querySelector(s);
-const $$ = s => [...document.querySelectorAll(s)];
+const reglas = {
+    marca: () => validarMarca(solicitud.equipo.marca),
+    modelo: () => validarModelo(solicitud.equipo.modelo),
+    valor: () => validarValor(solicitud.equipo.valor),
+    antiguedad: () => validarAntiguedad(solicitud.equipo.antiguedad),
+    nombre: () => validarNombre(solicitud.titular.nombre),
+    apellido: () => validarNombre(solicitud.titular.apellido),
+    dni: () => validarDni(solicitud.titular.dni),
+    nacimiento: () => validarNacimiento(solicitud.titular.nacimiento),
+    email: () => validarEmail(solicitud.titular.email),
+    celular: () => validarCelular(solicitud.titular.celular),
+    terminos: () => validarTerminos(solicitud.titular.terminos),
+    metodo: () => null,
+    tarjeta: () => validarTarjeta(solicitud.pago.tarjeta),
+    vencimiento: () => validarVencimiento(solicitud.pago.vencimiento),
+    cvv: () => validarCvv(solicitud.pago.cvv),
+    pagoTitular: () => validarTitularTarjeta(solicitud.pago.titular)
+};
+
+const camposPorPaso = {
+    1: ["marca", "modelo", "valor", "antiguedad"],
+    3: ["nombre", "apellido", "dni", "nacimiento", "email", "celular", "terminos"],
+    4: ["metodo", "tarjeta", "vencimiento", "cvv", "pagoTitular"]
+};
+
+const camposPorControl = {
+    pagoTitular: "pago-titular"
+};
+
+const ayudaPorPaso = {
+    1: "Completá los datos requeridos para ver los planes.",
+    3: "Completá tus datos y aceptá los términos para continuar.",
+    4: "Se confirmará la simulación de pago."
+};
+
+const planesUrl = new URL("../data/planes.json", import.meta.url);
 let planes = [];
+let errorCargaPlanes = null;
 try {
-  const respuesta = await fetch("./data/planes.json");
-  if (!respuesta.ok) throw new Error("No se pudo cargar data/planes.json");
-  planes = await respuesta.json();
-} catch (error) {
-  console.error(error);
-  alert("No se pudieron cargar los planes. Abrí el proyecto con Live Server o con un servidor local, no con file://.");
-}
-const valorLimpio = v => Number(String(v).replace(/\D/g, ""));
-function setError(campo, mensaje) {
-  const input = $(`#${campo}`);
-  const error = $(`#${campo}-error`);
-  if (input) {
-    if (mensaje) input.setAttribute("aria-invalid", "true");
-    else input.removeAttribute("aria-invalid");
-  }
-  const field = input?.closest(".field");
-  if (field) field.toggleAttribute("data-invalid", Boolean(mensaje));
-  if (error) error.textContent = mensaje || "";
-}
-function validarCampo(campo) {
-  const el = $(`#${campo}`);
-  const valor = campo === "antiguedad" ? $('input[name="antiguedad"]:checked')?.value || "" : campo === "terminos" ? $("#terminos").checked : el?.value || "";
-  const error = validar(campo, valor, solicitud);
-  setError(campo, error);
-  return !error;
-}
-function campoBlur(campo) {
-  const el = $(`#${campo}`);
-  if (el) el.addEventListener("blur", () => validarCampo(campo));
-}
-function formValido(campos) {
-  let valido = true;
-  for (const c of campos) if (!validarCampo(c)) valido = false;
-  if (!valido) $("[aria-invalid=true]")?.focus();
-  return valido;
-}
-function actualizarBoton(id, campos) {
-  const btn = $(`#${id}`);
-  const revisar = () => btn.disabled = !campos.every(c => {
-    const el = $(`#${c}`);
-    const v = c === "antiguedad" ? $('input[name="antiguedad"]:checked')?.value || "" : c === "terminos" ? $("#terminos").checked : el?.value || "";
-    return !validar(c, v, solicitud);
-  });
-  campos.forEach(c => {
-    const el = c === "antiguedad" ? $$('input[name="antiguedad"]') : [ $(`#${c}`) ].filter(Boolean);
-    el.forEach(e => { e.addEventListener("input", revisar); e.addEventListener("change", revisar); });
-  });
-  revisar();
-}
-const camposEquipo = ["marca","modelo","valor","antiguedad"];
-const camposTitular = ["nombre","apellido","dni","nacimiento","email","celular","terminos"];
-const camposPago = ["tarjeta","vencimiento","cvv","pago-titular"];
-[...camposEquipo,...camposTitular,...camposPago].forEach(campoBlur);
+    const respuestaPlanes = await fetch(planesUrl);
+    if (!respuestaPlanes.ok) {
+        throw new Error(`No se pudieron cargar los planes (${respuestaPlanes.status}).`);
+    }
 
-$("#valor").addEventListener("input", e => {
-  const clean = e.target.value.replace(/\D/g, "");
-  if (e.target.value !== clean) e.target.value = clean;
+    const planesCargados = await respuestaPlanes.json();
+    if (
+        !Array.isArray(planesCargados) ||
+        !planesCargados.some(plan => plan.id === "plus" && plan.recomendado) ||
+        planesCargados.some(plan =>
+            !plan.id ||
+            !plan.nombre ||
+            !Number.isFinite(plan.tasaAnual) ||
+            !Array.isArray(plan.coberturas)
+        )
+    ) {
+        throw new Error("El archivo data/planes.json no tiene la estructura de planes esperada.");
+    }
+    planes = planesCargados;
+} catch (error) {
+    console.error(error);
+    errorCargaPlanes = error;
+}
+
+const touched = new Set();
+let procesandoPago = false;
+let mensajeErrorPago = "";
+
+const forms = [
+    document.getElementById("equipment-form"),
+    document.getElementById("holder-form"),
+    document.getElementById("payment-form")
+];
+
+const botonesContinuar = {
+    1: document.getElementById("equipment-next"),
+    3: document.getElementById("holder-next"),
+    4: document.getElementById("pay-button")
+};
+
+function control(campo) {
+    return document.getElementById(camposPorControl[campo] ?? campo);
+}
+
+function leerCampo(campo) {
+    switch (campo) {
+        case "marca":
+        case "modelo":
+            solicitud.equipo[campo] = control(campo).value;
+            break;
+        case "valor":
+            solicitud.equipo.valor = control(campo).value;
+            break;
+        case "antiguedad":
+            solicitud.equipo.antiguedad =
+                document.querySelector('input[name="antiguedad"]:checked')?.value ?? "";
+            break;
+        case "terminos":
+            solicitud.titular.terminos = control(campo).checked;
+            break;
+        case "metodo":
+            solicitud.pago.metodo = control(campo).value;
+            break;
+        case "pagoTitular":
+            solicitud.pago.titular = control(campo).value;
+            break;
+        default:
+            if (campo in solicitud.titular) {
+                solicitud.titular[campo] = control(campo).value;
+            } else if (campo in solicitud.pago) {
+                solicitud.pago[campo] = control(campo).value;
+            }
+    }
+}
+
+function renderError(campo) {
+    const error = reglas[campo]();
+    const container = document.querySelector(`[data-field="${campo}"]`);
+    const input = campo === "antiguedad"
+        ? document.querySelector('input[name="antiguedad"]')
+        : control(campo);
+    const errorText = document.getElementById(`${campo}-error`);
+
+    if (error) {
+        input?.setAttribute("aria-invalid", "true");
+        container?.setAttribute("data-invalid", "");
+        errorText.textContent = error;
+    } else {
+        input?.removeAttribute("aria-invalid");
+        container?.removeAttribute("data-invalid");
+        errorText.textContent = "";
+    }
+
+    return error;
+}
+
+function validarPaso(paso) {
+    let primerError = null;
+    for (const campo of camposPorPaso[paso]) {
+        touched.add(campo);
+        const error = renderError(campo);
+        if (!primerError && error) {
+            primerError = campo;
+        }
+    }
+    return primerError;
+}
+
+function nombreCampo(campo) {
+    if (campo === "antiguedad") {
+        return "la antigüedad";
+    }
+    const input = control(campo);
+    const label = input && document.querySelector(`label[for="${input.id}"]`);
+    return label?.textContent.trim().toLowerCase() ?? "los campos pendientes";
+}
+
+function actualizarPaso(paso) {
+    const campos = camposPorPaso[paso];
+    const primerCampoInvalido = campos.find(campo => reglas[campo]());
+    const boton = botonesContinuar[paso];
+    boton.disabled = Boolean(primerCampoInvalido) || (paso === 4 && procesandoPago);
+    boton.textContent = paso === 1
+        ? "Ver planes →"
+        : paso === 3
+            ? "Continuar al pago →"
+            : procesandoPago
+                ? "Procesando…"
+                : "Pagar y emitir póliza";
+
+    const ayuda = document.getElementById(
+        `${paso === 1 ? "equipment" : paso === 3 ? "holder" : "payment"}-action-help`
+    );
+    ayuda.textContent = mensajeErrorPago ||
+        (primerCampoInvalido
+            ? `Completá ${nombreCampo(primerCampoInvalido)} para continuar.`
+            : ayudaPorPaso[paso]);
+}
+
+function actualizarResumen() {
+    renderResumen(planes);
+}
+
+function render() {
+    renderVista();
+    if (solicitud.paso >= 1 && solicitud.paso <= 4) {
+        renderStepper();
+    }
+    if (solicitud.paso in camposPorPaso) {
+        actualizarPaso(solicitud.paso);
+    }
+    actualizarResumen();
+}
+
+function cambiarPaso(paso, enfocar = true) {
+    solicitud.paso = paso;
+    render();
+    if (enfocar) {
+        document.querySelector(`[data-step="${paso}"] h1`)?.focus();
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function alCambiarCampo(campo) {
+    leerCampo(campo);
+    if (touched.has(campo)) {
+        renderError(campo);
+    }
+    if (solicitud.paso in camposPorPaso) {
+        actualizarPaso(solicitud.paso);
+    }
+    actualizarResumen();
+}
+
+function vincularCampo(campo, selector = `#${camposPorControl[campo] ?? campo}`) {
+    const inputs = [...document.querySelectorAll(selector)];
+    if (inputs.length === 0) {
+        throw new Error(`No se encontró el control para el campo "${campo}".`);
+    }
+
+    inputs.forEach(input => {
+        if (campo === "antiguedad") {
+            input.setAttribute("aria-describedby", "antiguedad-error");
+        }
+        for (const eventName of ["input", "change"]) {
+            input.addEventListener(eventName, () => alCambiarCampo(campo));
+        }
+
+        input.addEventListener("blur", () => {
+            leerCampo(campo);
+            touched.add(campo);
+            renderError(campo);
+            if (solicitud.paso in camposPorPaso) {
+                actualizarPaso(solicitud.paso);
+            }
+        });
+    });
+}
+
+function restaurarFormulario() {
+    document.getElementById("marca").value = solicitud.equipo.marca;
+    document.getElementById("modelo").value = solicitud.equipo.modelo;
+    document.getElementById("valor").value = solicitud.equipo.valor || "";
+    document.querySelectorAll('input[name="antiguedad"]').forEach(radio => {
+        radio.checked = radio.value === solicitud.equipo.antiguedad;
+    });
+
+    for (const campo of ["nombre", "apellido", "dni", "nacimiento", "email", "celular"]) {
+        control(campo).value = solicitud.titular[campo];
+    }
+    control("terminos").checked = solicitud.titular.terminos;
+
+    for (const campo of ["metodo", "tarjeta", "vencimiento", "cvv"]) {
+        control(campo).value = solicitud.pago[campo];
+    }
+    control("pagoTitular").value = solicitud.pago.titular;
+}
+
+for (const campo of camposPorPaso[1]) {
+    vincularCampo(campo, campo === "antiguedad"
+        ? 'input[name="antiguedad"]'
+        : `#${campo}`);
+}
+
+for (const campo of camposPorPaso[3]) {
+    vincularCampo(campo);
+}
+
+for (const campo of camposPorPaso[4]) {
+    vincularCampo(campo);
+}
+
+document.getElementById("tarjeta").addEventListener("input", event => {
+    const digitos = event.currentTarget.value.replace(/\D/g, "").slice(0, 16);
+    event.currentTarget.value = digitos.replace(/(\d{4})(?=\d)/g, "$1 ");
+    alCambiarCampo("tarjeta");
 });
-$("#equipo-form").addEventListener("submit", e => {
-  e.preventDefault();
-  if (!formValido(camposEquipo)) return;
-  solicitud.equipo = { marca: $("#marca").value, modelo: $("#modelo").value.trim(), valor: valorLimpio($("#valor").value), antiguedad: $('input[name="antiguedad"]:checked').value };
-  renderStepper(); renderPlanes(planes); irAPaso(2);
+
+document.getElementById("vencimiento").addEventListener("input", event => {
+    const digitos = event.currentTarget.value.replace(/\D/g, "").slice(0, 4);
+    event.currentTarget.value = digitos.length > 2
+        ? `${digitos.slice(0, 2)}/${digitos.slice(2)}`
+        : digitos;
+    alCambiarCampo("vencimiento");
 });
-actualizarBoton("ver-planes", camposEquipo);
-$("#ir-datos").addEventListener("click", () => { renderResumen(planes); irAPaso(3); renderStepper(); });
-$("#titular-form").addEventListener("submit", e => {
-  e.preventDefault();
-  if (!formValido(camposTitular)) return;
-  solicitud.titular = { nombre: $("#nombre").value.trim(), apellido: $("#apellido").value.trim(), dni: $("#dni").value, nacimiento: $("#nacimiento").value, email: $("#email").value.trim(), celular: $("#celular").value.replace(/[\s-]/g, ""), terminos: $("#terminos").checked };
-  renderResumen(planes); renderStepper(); irAPaso(4);
+
+document.getElementById("plan-list").addEventListener("change", event => {
+    if (event.target.name !== "plan") {
+        return;
+    }
+    solicitud.plan = event.target.value;
+    actualizarResumen();
 });
-actualizarBoton("continuar-pago", camposTitular);
-$("#tarjeta").addEventListener("input", e => {
-  const digits = e.target.value.replace(/\D/g, "").slice(0,16);
-  e.target.value = digits.replace(/(\d{4})(?=\d)/g, "$1 ");
+
+document.getElementById("equipment-form").addEventListener("submit", event => {
+    event.preventDefault();
+    const primerError = validarPaso(1);
+    actualizarPaso(1);
+    if (primerError) {
+        (primerError === "antiguedad"
+            ? document.querySelector('input[name="antiguedad"]')
+            : control(primerError))?.focus();
+        return;
+    }
+
+    solicitud.plan = "plus";
+    renderPlanes(planes);
+    cambiarPaso(2);
 });
-$("#vencimiento").addEventListener("input", e => {
-  let d = e.target.value.replace(/\D/g, "").slice(0,4);
-  if (d.length > 2) d = d.slice(0,2) + "/" + d.slice(2);
-  e.target.value = d;
+
+document.getElementById("plans-form").addEventListener("submit", event => {
+    event.preventDefault();
+    if (!errorCargaPlanes && planes.some(plan => plan.id === solicitud.plan)) {
+        cambiarPaso(3);
+    }
 });
-$("#pago-form").addEventListener("submit", async e => {
-  e.preventDefault();
-  if (!formValido(camposPago)) return;
-  solicitud.pago = { metodo: $("#metodo").value, tarjeta: $("#tarjeta").value, vencimiento: $("#vencimiento").value, cvv: $("#cvv").value, titular: $("#pago-titular").value.trim() };
-  const boton = $("#pagar");
-  boton.disabled = true; boton.textContent = "Procesando…";
-  const resultado = await simularPago(solicitud.pago.tarjeta);
-  boton.disabled = false; boton.textContent = "Pagar y emitir póliza";
-  if (resultado.ok) {
-    solicitud.poliza = generarPoliza();
-    renderResultado(planes); irAPaso(5);
-  } else {
-    irAPaso(6);
-  }
+
+document.getElementById("holder-form").addEventListener("submit", event => {
+    event.preventDefault();
+    const primerError = validarPaso(3);
+    actualizarPaso(3);
+    if (primerError) {
+        control(primerError)?.focus();
+        return;
+    }
+    cambiarPaso(4);
 });
-$("#reintentar").addEventListener("click", () => { irAPaso(4); renderStepper(); renderResumen(planes); });
-$("[data-cambiar-pago]").addEventListener("click", () => { $("#tarjeta").focus(); irAPaso(4); });
-$$("[data-volver]").forEach(btn => btn.addEventListener("click", () => {
-  const n = Number(btn.dataset.volver);
-  irAPaso(n);
-  renderStepper();
-  if (n === 2 || n === 3 || n === 4) renderResumen(planes);
-}));
-$$("[data-ir]").forEach(btn => btn.addEventListener("click", () => { irAPaso(Number(btn.dataset.ir)); renderStepper(); }));
-$("#brand-home").addEventListener("click", e => { e.preventDefault(); reiniciar(); });
-$$("[data-reiniciar]").forEach(btn => btn.addEventListener("click", reiniciar));
-renderStepper();
+
+document.getElementById("payment-form").addEventListener("submit", async event => {
+    event.preventDefault();
+    if (procesandoPago) {
+        return;
+    }
+
+    const primerError = validarPaso(4);
+    actualizarPaso(4);
+    if (primerError) {
+        control(primerError)?.focus();
+        return;
+    }
+
+    procesandoPago = true;
+    mensajeErrorPago = "";
+    actualizarPaso(4);
+    document.getElementById("live-status").textContent = "Procesando el pago simulado.";
+
+    const resultado = await simularPago(solicitud.pago.tarjeta);
+    procesandoPago = false;
+
+    if (resultado.ok) {
+        solicitud.poliza = generarPoliza();
+        renderResultado(planes);
+        document.getElementById("live-status").textContent =
+            "Pago aprobado. Tu póliza fue emitida.";
+        cambiarPaso(5);
+        return;
+    }
+
+    mensajeErrorPago = resultado.motivo;
+    renderResultado(planes);
+    document.getElementById("live-status").textContent =
+        "Pago rechazado. Podés cambiar el medio de pago o reintentar.";
+    cambiarPaso(6);
+});
+
+document.querySelectorAll("[data-back]").forEach(button => {
+    button.addEventListener("click", () => cambiarPaso(Math.max(0, solicitud.paso - 1)));
+});
+
+document.querySelectorAll("[data-go-step]").forEach(button => {
+    button.addEventListener("click", () => cambiarPaso(Number(button.dataset.goStep)));
+});
+
+document.querySelectorAll("[data-go-home]").forEach(link => {
+    link.addEventListener("click", event => {
+        event.preventDefault();
+        reiniciar();
+    });
+});
+
+document.querySelector("[data-retry]").addEventListener("click", () => {
+    mensajeErrorPago = "";
+    cambiarPaso(4);
+});
+
+document.querySelector("[data-change-method]").addEventListener("click", () => {
+    mensajeErrorPago = "";
+    cambiarPaso(4, false);
+    control("metodo").focus();
+});
+
+document.querySelector("[data-reset]").addEventListener("click", reiniciar);
+
+function reiniciar() {
+    reiniciarSolicitud();
+    touched.clear();
+    mensajeErrorPago = "";
+    procesandoPago = false;
+    for (const form of forms) {
+        form.reset();
+    }
+    renderPlanes(planes);
+    render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+const hoy = new Date();
+const limiteNacimiento = new Date(
+    hoy.getFullYear() - 18,
+    hoy.getMonth(),
+    hoy.getDate()
+);
+control("nacimiento").max = [
+    limiteNacimiento.getFullYear(),
+    String(limiteNacimiento.getMonth() + 1).padStart(2, "0"),
+    String(limiteNacimiento.getDate()).padStart(2, "0")
+].join("-");
+
+if (errorCargaPlanes) {
+    document.getElementById("plans-error").textContent =
+        "No se pudieron cargar los planes. Abrí el proyecto desde un servidor local y recargá la página.";
+    document.getElementById("plans-error").hidden = false;
+    document.getElementById("plans-next").disabled = true;
+} else {
+    renderPlanes(planes);
+}
+document.getElementById("plans-loading").hidden = true;
+restaurarFormulario();
+render();
