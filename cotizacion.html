@@ -67,7 +67,7 @@
                 </p>
 
 
-                <form id="formulario-cotizacion">
+                <form id="formulario-cotizacion" novalidate>
 
                     <!-- MARCA -->
                     <div class="campo">
@@ -92,6 +92,8 @@
                             id="modelo"
                             name="modelo"
                             placeholder="Ejemplo: Galaxy S24"
+                            minlength="2"
+                            maxlength="40"
                             required
                         >
                     </div>
@@ -106,7 +108,8 @@
                             id="valor"
                             name="valor"
                             placeholder="Ejemplo: 800000"
-                            min="1"
+                            min="100000"
+                            max="2500000"
                             step="1"
                             required
                         >
@@ -119,16 +122,12 @@
                             Antigüedad del celular (años)
                         </label>
 
-                        <input
-                            type="number"
-                            id="antiguedad"
-                            name="antiguedad"
-                            placeholder="Ejemplo: 0.5"
-                            min="0"
-                            max="20"
-                            step="any"
-                            required
-                        >
+                        <select id="antiguedad" name="antiguedad" required>
+                            <option value="">Elegí una opción</option>
+                            <option value="0.5">Menos de 1 año</option>
+                            <option value="1">De 1 a 2 años</option>
+                            <option value="2.5">Más de 2 años</option>
+                        </select>
                     </div>
 
 

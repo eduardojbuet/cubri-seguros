@@ -15,9 +15,9 @@ formulario.addEventListener("submit", function(evento) {
 
         valor: Number(document.getElementById("valor").value),
 
-        antiguedad: Number(
-            document.getElementById("antiguedad").value
-        )
+        antiguedad: document.getElementById("antiguedad").value === ""
+            ? NaN
+            : Number(document.getElementById("antiguedad").value)
 
     };
 

@@ -57,9 +57,18 @@ cubri-seguros/
 │   └── planes.json     # Datos de los planes disponibles
 │
 └── README.md           # Documentación del proyecto
+```
 
 ## Casos de prueba de precios
 
 - Valor $ 600.000 · menos de 1 año → Básico $ 2.000 · Plus $ 3.000 · Premium $ 4.500
 - Valor $ 600.000 · 1 a 2 años → Básico $ 2.200 · Plus $ 3.300 · Premium $ 4.950
 - Valor $ 1.200.000 · más de 2 años → Básico $ 5.000 · Plus $ 7.500 · Premium $ 11.250
+
+## Validaciones
+
+- Equipo: marca obligatoria, modelo de 2 a 40 caracteres y valor entre $100.000 y $2.500.000.
+- Antigüedad: debe elegirse una opción (menos de 1 año, de 1 a 2 años o más de 2 años).
+- Titular: nombre y apellido de al menos 2 letras, DNI de 7 u 8 números, mayoría de edad, email válido, celular de 10 dígitos y aceptación de términos.
+- Pago: tarjeta de 16 dígitos, vencimiento futuro en formato MM/AA, CVV de 3 dígitos y nombre del titular obligatorio.
+- Simulación: 4111 1111 1111 1111 aprueba, 4000 0000 0000 0002 rechaza y cualquier otro número de 16 dígitos válido aprueba.

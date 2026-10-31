@@ -1315,6 +1315,23 @@ button.boton {
     min-height: 46px;
 }
 
+.tarjeta-titular .campo-terminos {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.tarjeta-titular .campo-terminos input {
+    width: auto;
+    min-height: auto;
+    margin: 3px 0 0;
+}
+
+.tarjeta-titular .campo-terminos label {
+    margin: 0;
+    font-weight: normal;
+}
+
 /* BOTONES */
 
 .acciones-titular {
@@ -1502,7 +1519,7 @@ button.boton {
 
 .datos-tarjeta {
     display: grid;
-    grid-template-columns: 1fr 1fr 1.3fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 15px;
 }
 

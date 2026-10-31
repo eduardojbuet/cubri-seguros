@@ -84,7 +84,7 @@
                 </div>
             </div>
 
-            <form id="formulario-pago">
+            <form id="formulario-pago" novalidate>
 
                 <div class="campo">
                     <label for="nombre-tarjeta">
@@ -119,33 +119,15 @@
                 <div class="datos-tarjeta">
 
                     <div class="campo">
-                        <label for="mes-vencimiento">
-                            Mes
-                        </label>
+                        <label for="vencimiento">Vencimiento (MM/AA)</label>
 
                         <input
                             type="text"
-                            id="mes-vencimiento"
-                            placeholder="MM"
+                            id="vencimiento"
+                            placeholder="MM/AA"
                             inputmode="numeric"
-                            maxlength="2"
-                            autocomplete="cc-exp-month"
-                            required
-                        >
-                    </div>
-
-                    <div class="campo">
-                        <label for="anio-vencimiento">
-                            Año
-                        </label>
-
-                        <input
-                            type="text"
-                            id="anio-vencimiento"
-                            placeholder="AAAA"
-                            inputmode="numeric"
-                            maxlength="4"
-                            autocomplete="cc-exp-year"
+                            maxlength="5"
+                            autocomplete="cc-exp"
                             required
                         >
                     </div>
@@ -160,7 +142,7 @@
                             id="codigo-seguridad"
                             placeholder="CVV"
                             inputmode="numeric"
-                            maxlength="4"
+                            maxlength="3"
                             autocomplete="cc-csc"
                             required
                         >

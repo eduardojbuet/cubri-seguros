@@ -48,36 +48,32 @@ function formatearPrecioPago(valor) {
 }
 
 
-// Validar vencimiento de tarjeta
-function validarVencimiento(mes, anio) {
+function validarVencimiento(vencimiento) {
 
-    const mesNumero = Number(mes);
-    const anioNumero = Number(anio);
+    const coincidencia = vencimiento.match(/^(0[1-9]|1[0-2])\/([0-9]{2})$/);
 
-    if (!/^[0-9]{2}$/.test(mes) ||
-        !/^[0-9]{4}$/.test(anio)) {
+    if (!coincidencia) {
         return false;
     }
 
-    if (mesNumero < 1 || mesNumero > 12) {
-        return false;
-    }
-
+    const mes = Number(coincidencia[1]);
+    const anio = 2000 + Number(coincidencia[2]);
     const hoy = new Date();
 
-    const anioActual = hoy.getFullYear();
-    const mesActual = hoy.getMonth() + 1;
-
-    if (
-        anioNumero < anioActual ||
-        (anioNumero === anioActual && mesNumero < mesActual)
-    ) {
-        return false;
-    }
-
-    return true;
+    return anio > hoy.getFullYear() ||
+        (anio === hoy.getFullYear() && mes >= hoy.getMonth() + 1);
 
 }
+
+
+document.getElementById("vencimiento").addEventListener("input", function() {
+
+    const digitos = this.value.replace(/\D/g, "").slice(0, 4);
+    this.value = digitos.length > 2
+        ? `${digitos.slice(0, 2)}/${digitos.slice(2)}`
+        : digitos;
+
+});
 
 
 // Procesar el formulario
@@ -93,11 +89,8 @@ formulario.addEventListener("submit", function(evento) {
     const numeroTarjeta =
         document.getElementById("numero-tarjeta").value.replace(/\s/g, "");
 
-    const mes =
-        document.getElementById("mes-vencimiento").value.trim();
-
-    const anio =
-        document.getElementById("anio-vencimiento").value.trim();
+    const vencimiento =
+        document.getElementById("vencimiento").value.trim();
 
     const codigo =
         document.getElementById("codigo-seguridad").value.trim();
@@ -107,7 +100,7 @@ formulario.addEventListener("submit", function(evento) {
     if (nombreTarjeta === "") {
 
         mensajeError.textContent =
-            "Ingresá el nombre del titular de la tarjeta.";
+            "Ingresá el nombre del titular";
 
         return;
 
@@ -118,7 +111,7 @@ formulario.addEventListener("submit", function(evento) {
     if (!/^[0-9]{16}$/.test(numeroTarjeta)) {
 
         mensajeError.textContent =
-            "Ingresá un número de tarjeta de 16 dígitos.";
+            "Número de tarjeta inválido";
 
         return;
 
@@ -126,10 +119,10 @@ formulario.addEventListener("submit", function(evento) {
 
 
     // Validar vencimiento
-    if (!validarVencimiento(mes, anio)) {
+    if (!validarVencimiento(vencimiento)) {
 
         mensajeError.textContent =
-            "Ingresá una fecha de vencimiento válida.";
+            "Vencimiento inválido";
 
         return;
 
@@ -137,10 +130,10 @@ formulario.addEventListener("submit", function(evento) {
 
 
     // Validar código de seguridad
-    if (!/^[0-9]{3,4}$/.test(codigo)) {
+    if (!/^[0-9]{3}$/.test(codigo)) {
 
         mensajeError.textContent =
-            "El código de seguridad debe tener 3 o 4 números.";
+            "CVV inválido";
 
         return;
 
@@ -150,7 +143,7 @@ formulario.addEventListener("submit", function(evento) {
     // SIMULACIÓN DEL PAGO
     // Estas tarjetas son ficticias para el trabajo práctico.
 
-    const tarjetaAprobada = "4242424242424242";
+    const tarjetaAprobada = "4111111111111111";
     const tarjetaRechazada = "4000000000000002";
 
     let estadoPago;
@@ -166,7 +159,7 @@ formulario.addEventListener("submit", function(evento) {
 
     } else {
 
-        estadoPago = "rechazado";
+        estadoPago = "aprobado";
 
     }
 

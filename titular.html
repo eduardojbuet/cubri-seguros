@@ -93,7 +93,7 @@
                     Completá tus datos tal como aparecen en tu documento.
                 </p>
 
-                <form id="formulario-titular">
+                <form id="formulario-titular" novalidate>
 
                     <div class="campos-titular">
 
@@ -107,6 +107,7 @@
                                 name="nombre"
                                 placeholder="Tu nombre"
                                 autocomplete="given-name"
+                                minlength="2"
                                 required
                             >
                         </div>
@@ -122,6 +123,7 @@
                                 name="apellido"
                                 placeholder="Tu apellido"
                                 autocomplete="family-name"
+                                minlength="2"
                                 required
                             >
                         </div>
@@ -139,6 +141,19 @@
                                 inputmode="numeric"
                                 minlength="7"
                                 maxlength="8"
+                                required
+                            >
+                        </div>
+
+                        <!-- FECHA DE NACIMIENTO -->
+                        <div class="campo">
+                            <label for="fecha-nacimiento">Fecha de nacimiento</label>
+
+                            <input
+                                type="date"
+                                id="fecha-nacimiento"
+                                name="fechaNacimiento"
+                                autocomplete="bday"
                                 required
                             >
                         </div>
@@ -161,35 +176,33 @@
 
                         <!-- TELEFONO -->
                         <div class="campo">
-                            <label for="telefono">Teléfono</label>
+                            <label for="telefono">Celular</label>
 
                             <input
                                 type="tel"
                                 id="telefono"
                                 name="telefono"
-                                placeholder="Ejemplo: 3442 123456"
+                                placeholder="Ejemplo: 11 5555-1234"
                                 autocomplete="tel"
+                                inputmode="numeric"
                                 required
                             >
                         </div>
 
-
-                        <!-- DOMICILIO -->
-                        <div class="campo campo-completo">
-                            <label for="domicilio">Domicilio</label>
-
-                            <input
-                                type="text"
-                                id="domicilio"
-                                name="domicilio"
-                                placeholder="Calle y número"
-                                autocomplete="street-address"
-                                required
-                            >
-                        </div>
 
                     </div>
 
+                    <div class="campo campo-terminos">
+                        <input
+                            type="checkbox"
+                            id="terminos"
+                            name="terminos"
+                            required
+                        >
+                        <label for="terminos">
+                            Acepto los términos y condiciones.
+                        </label>
+                    </div>
 
                     <!-- ERROR -->
                     <p id="mensaje-error" class="mensaje-error"></p>

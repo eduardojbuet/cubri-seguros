@@ -51,17 +51,20 @@ formulario.addEventListener("submit", function(evento) {
     // Obtener los datos ingresados
     const datosTitular = {
 
-        nombre: document.getElementById("nombre").value,
+        nombre: document.getElementById("nombre").value.trim(),
 
-        apellido: document.getElementById("apellido").value,
+        apellido: document.getElementById("apellido").value.trim(),
 
         dni: document.getElementById("dni").value.trim(),
+
+        fechaNacimiento:
+            document.getElementById("fecha-nacimiento").value,
 
         email: document.getElementById("email").value.trim(),
 
         telefono: document.getElementById("telefono").value.trim(),
 
-        domicilio: document.getElementById("domicilio").value.trim()
+        terminos: document.getElementById("terminos").checked
 
     };
 
